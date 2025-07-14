@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
 
-
-
 const productSchema = new mongoose.Schema({
     name: {type: String, required: true},
     description: {type: Array, required: true},
@@ -10,8 +8,8 @@ const productSchema = new mongoose.Schema({
     image: {type: Array, required: true},
     category: {type: String, required: true},
     inStock: {type: Boolean, default: true},
-},{ timestamps: true}) //we will be able to create a user with empty object data
+},{ timestamps: true});
 
-const Product = mongoose.models.product || mongoose.model('Product', productSchema)
+const Product = mongoose.models.Product || mongoose.model('Product', productSchema);
 
-export default Product
+export default Product; 

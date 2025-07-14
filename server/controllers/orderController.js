@@ -108,21 +108,21 @@ export const placeOrderStripe = async(req, res)=>
     }
 }
 
-//Stripe webhooks to verify payments
+// //Stripe webhooks to verify payments
 export const stripeWebHooks = async (req,res) => {
     const stripeInstance = new stripe(process.env.SECRET_KEY)
 
-    const sig = request.headers["stripe-signature"];
+    const sig = req.headers["stripe-signature"];
     let event;
 
     try {
         event = stripeInstance.webhooks.constructEvent(
-            request.body,
+            req.body,
             sig,
             process.env.STRIPE_WEBHOOK_SECRET
         );
     } catch (error) {
-        response.status(400).send(`Webhook Error: ${error.message}`)
+        res.status(400).send(`Webhook Error: ${error.message}`)
     }
 
     //Handle event
@@ -159,7 +159,7 @@ export const stripeWebHooks = async (req,res) => {
             console.error(`Unhandled event type ${event.type}`)
             break;
     }
-    response.json({received:true})
+    res.json({received:true})
 }
 
 
