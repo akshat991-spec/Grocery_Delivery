@@ -1,0 +1,3 @@
+we have created this to decode the token
+
+middleware is the function that gets executed before executing the controller function of any route
