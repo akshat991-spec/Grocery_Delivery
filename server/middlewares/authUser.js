@@ -12,8 +12,7 @@ const authUser = async(req, res, next) =>
     {
         return res.json({ success: false, message: 'Not Authorized' })
     }
-    try //if present we will decode this to token to extract the id
-    {
+    try {
         const tokenDecode = jwt.verify(token, process.env.JWT_SECRET)
 
         if(tokenDecode.id)
@@ -24,10 +23,8 @@ const authUser = async(req, res, next) =>
             return res.json({ success: false, message: 'Not Authorized' })
         }
         next();
-
-    }catch (error) {
-        return res.json({ success: false, message: error.mesage })
-
+    } catch (error) {
+        return res.json({ success: false, message: error.message })
     }
 }
 

@@ -45,7 +45,7 @@ export const AppContextProvider = ({children}) => {
     const fetchUser = async() =>
     {
         try {
-            const {data} = await axios.get('api/user/is-auth');
+            const {data} = await axios.get('/api/user/is-auth');
 
             if(data.success)
             {
@@ -93,7 +93,7 @@ export const AppContextProvider = ({children}) => {
     }
 
     //update cart item quantity
-    const UpdateCartItem= (itemId, quantity) => {
+    const updateCartItem = (itemId, quantity) => {
         let cartData = structuredClone(cartItems);
         cartData[itemId] = quantity;
         setCartItems(cartData)
@@ -171,7 +171,7 @@ export const AppContextProvider = ({children}) => {
     },[cartItems])
 
     const value = {navigate, user, setUser, setIsSeller, isSeller, showUserLogin, setShowUserLogin, 
-        products,currency, addToCart, UpdateCartItem, removeFromCart, cartItems,setCartItems, searchQuery, setSearchQuery,
+        products,currency, addToCart, updateCartItem, removeFromCart, cartItems,setCartItems, searchQuery, setSearchQuery,
         getCartCount, getCartAmount, axios, fetchProducts, fetchSeller}
 
     return <AppContext.Provider value = {value}>

@@ -70,21 +70,20 @@ const getUserAddress = async() =>{
                     toast.error("Cant do")
                 }
             }
-            // else{
-            //     //Place order with stripe
-            //      const{data} = await axios.post('/api/order/stripe',{
-            //         userId : user._id,
-            //         items: cartArray.map(item => ({product:item._id,
-            //             quantity:item.quantity})),
-            //             address:selectedAddress._id
-            //     })
-            //     if(data.success){
-            //        window.location.replace(data.url)
-            //     }
-                // else{
-                //     toast.error("Cant do")
-                // }
-            // }
+            else if (paymentOption === 'Stripe') {
+                const {data} = await axios.post('/api/order/stripe', {
+                    userId : user._id,
+                    items: cartArray.map(item => ({product:item._id,
+                        quantity:item.quantity})),
+                        address:selectedAddress._id
+                })
+                if(data.success){
+                   window.location.replace(data.url)
+                }
+                else{
+                    toast.error(data.message || "Payment failed")
+                }
+            }
             }
          catch (error) {
             toast.error(error.message)   
@@ -194,6 +193,7 @@ const getUserAddress = async() =>{
 
                     <select onChange={(e) => setPaymentOption(e.target.value)} className="w-full border border-gray-300 bg-white px-3 py-2 mt-2 outline-none">
                         <option value="COD">Cash On Delivery</option>
+                        <option value="Stripe">Online Payment (Stripe)</option>
                     </select>
                 </div>
 

@@ -24,9 +24,7 @@ const Login = () => {
             setShowUserLogin(false)
         }
         else
-        {
-            toast.error("Invalid user or password")
-        }
+            toast.error(data.message || "Invalid user or password")
         
         } catch (error) {
             toast.error(error.message)

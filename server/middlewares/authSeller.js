@@ -8,22 +8,19 @@ const authSeller = async(req, res, next)=>
     {
         return res.json({ success: false, message: 'Not Authorized' })
     }
-    try //if present we will decode this to token to extract the id
+    try {
+        const tokenDecode = jwt.verify(sellerToken, process.env.JWT_SECRET)
+
+        if(tokenDecode.email === process.env.SELLER_EMAIL)
         {
-            const tokenDecode = jwt.verify(sellerToken, process.env.JWT_SECRET)
-    
-            if(tokenDecode.email === process.env.SELLER_EMAIL)
-            {
-                next();
-            } 
-            else{
-                return res.json({ success: false, message: 'Not Authorized' })
-            }
-            
-        }catch (error) {
-            return res.json({ success: false, message: error.mesage })
-    
+            next();
+        } 
+        else{
+            return res.json({ success: false, message: 'Not Authorized' })
         }
+    } catch (error) {
+        return res.json({ success: false, message: error.message })
+    }
 }
 
 export default authSeller

@@ -94,8 +94,8 @@ export const placeOrderStripe = async(req, res)=>
         const session = await stripeInstance.checkout.sessions.create({
             line_items,
             mode: "payment",
-            success_url: `${origin}/loader?next=my-orders`,
-            cancel_url: `${origin}/cart`,
+            success_url: `${origin}/loader?next=my-orders&success=true&orderId=${order._id.toString()}`,
+            cancel_url: `${origin}/loader?next=cart&success=false&orderId=${order._id.toString()}`,
             metadata: {
                 orderId : order._id.toString(),
                 userId,
@@ -202,5 +202,25 @@ export const getAllOrders = async(req, res) =>
     } catch (error) {
         res.json({success: false, message: error.message });
         
+    }
+}
+
+// Verify Stripe Payment : /api/order/verify
+export const verifyStripe = async (req, res) => {
+    try {
+        const { orderId, success } = req.body;
+        if (success === "true") {
+            await Order.findByIdAndUpdate(orderId, { isPaid: true });
+            const order = await Order.findById(orderId);
+            if (order) {
+                await User.findByIdAndUpdate(order.userId, { cartItems: {} });
+            }
+            return res.json({ success: true, message: "Payment successful" });
+        } else {
+            await Order.findByIdAndDelete(orderId);
+            return res.json({ success: false, message: "Payment failed" });
+        }
+    } catch (error) {
+        return res.json({ success: false, message: error.message });
     }
 }

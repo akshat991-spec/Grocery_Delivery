@@ -4,18 +4,38 @@ import { useLocation } from 'react-router-dom';
 
 const Loading = () => {
 
-    const {navigate} = useAppContext();
+    const {navigate, setCartItems, axios} = useAppContext();
     let {search} = useLocation();
     const query = new URLSearchParams(search)
     const nextUrl = query.get('next');
+    const success = query.get('success');
+    const orderId = query.get('orderId');
 
     useEffect(()=>{
-        if(nextUrl){
-            setTimeout(()=>{
+        const verifyPayment = async () => {
+            try {
+                if (success && orderId) {
+                    const { data } = await axios.post('/api/order/verify', { success, orderId });
+                    if (data.success) {
+                        setCartItems({});
+                    }
+                }
+            } catch (error) {
+                console.error("Payment verification error:", error);
+            } finally {
+                navigate(`/${nextUrl || 'my-orders'}`);
+            }
+        };
+
+        if (success && orderId) {
+            verifyPayment();
+        } else if (nextUrl) {
+            const timer = setTimeout(()=>{
                 navigate(`/${nextUrl}`)
-            },5000)
+            }, 5000);
+            return () => clearTimeout(timer);
         }
-    },[nextUrl])
+    }, [nextUrl, success, orderId])
     
   return (
     <div className='flex justify-center items-center h-screen'>
@@ -25,4 +45,4 @@ const Loading = () => {
   )
 }
 
-export default Loading
+export default Loading;
